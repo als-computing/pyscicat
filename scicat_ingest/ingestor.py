@@ -20,6 +20,7 @@ from pydantic import BaseModel
 import requests  # for HTTP requests
 
 from dotenv import load_dotenv
+from requests.models import Response
 
 load_dotenv('.env')
 
@@ -54,16 +55,23 @@ class DatasetType(str, enum.Enum):
     raw = "raw"
 
 class Ownable(BaseModel):
+    """ Many objects in SciCat are ownable
+    """
     ownerGroup: str
     accessGroups: List[str]
 
 class MongoQueryable(BaseModel):
+    """ Many objects in SciCat are mongo queryable
+    """
     createdBy: Optional[str]
     updatedBy: Optional[str]
     updatedAt: Optional[str]
     createdAt: Optional[str]
 
 class Dataset(Ownable, MongoQueryable):
+    """
+        A dataset in SciCat
+    """
     pid: Optional[str]
     owner: str
     ownerEmail: Optional[str]   
@@ -96,6 +104,11 @@ class Dataset(Ownable, MongoQueryable):
     isPublished: Optional[str]
 
 class DataFile(MongoQueryable):
+    """
+    A reference to a file in SciCat. Path is relative
+    to the Dataset's sourceFolder parameter
+
+    """
     path: str
     size: int
     time: Optional[str]
@@ -106,6 +119,9 @@ class DataFile(MongoQueryable):
 
 
 class Datablock(Ownable ):
+    """
+    A Datablock maps between a Dataset and contains DataFiles
+    """
     id: Optional[str]
     # archiveId: str = None  listed in catamel model, but comes back invalid?
     size: int
@@ -116,6 +132,9 @@ class Datablock(Ownable ):
     datasetId: str
 
 class Attachment(Ownable):
+    """ 
+        Attachments can be any base64 encoded string...thumbnails are attachments
+    """
     id: Optional[str]
     thumbnail: str
     caption: Optional[str]
@@ -123,7 +142,9 @@ class Attachment(Ownable):
 
 
 class ScicatIngestor():
-    # settables
+    """Responsible for communicating with the Scicat Catamel server via http
+
+    """
     baseurl = SCICAT_BASEURL
     # timeouts = (4, 8)  # we are hitting a transmission timeout...
     timeouts = None  # we are hitting a transmission timeout...
@@ -273,7 +294,7 @@ class ScicatIngestor():
     #         self.add_error("Error creating raw data set.", e)
 
 
-    def create_sample(self, projected_start_doc, access_groups, owner_group):
+    def upload_sample(self, projected_start_doc, access_groups, owner_group):
         sample = {
             "sampleId": projected_start_doc.get('sample_id'),
             "owner": projected_start_doc.get('pi_name'),
@@ -302,7 +323,7 @@ class ScicatIngestor():
             self.add_warning(f"missing field {field_name} defaulting to {str(default_val)}")
             return default_val
 
-    def create_raw_dataset(self, dataset: Dataset):
+    def upload_raw_dataset(self, dataset: Dataset):
         # create dataset 
         raw_dataset_url = self.baseurl + "RawDataSets/replaceOrCreate"
         resp = self._send_to_scicat(raw_dataset_url, dataset.dict(exclude_none=True))
@@ -313,7 +334,7 @@ class ScicatIngestor():
         logger.info(f"{self.job_id} new dataset created {new_pid}")
         return new_pid
         
-    def create_datablock(self, datablock: Datablock):
+    def upload_datablock(self, datablock: Datablock):
         datasetType = "RawDatasets"
     
         url = self.baseurl + f"{datasetType}/{urllib.parse.quote_plus(datablock.datasetId)}/origdatablocks"
@@ -326,33 +347,7 @@ class ScicatIngestor():
         # logger.info(f"{self.job_id} origdatablock sent for {new_pid}")
 
 
-    @staticmethod
-    def _extract_scientific_metadata(descriptor, event_page, run_start=None):
-        return_dict = {k.replace(":", "/"): v for k, v in descriptor['configuration']['all']['data'].items()}
-        if event_page:
-            return_dict['data_sample'] = event_page
-        if run_start:
-            return_dict['run_start_uid'] = run_start['uid']
-        
-        return OrderedDict(sorted(return_dict.items()))
-
-    @staticmethod
-    def _get_file_mod_time(pathobj):
-        # may only work on WindowsPath objects...
-        # timestamp = pathobj.lstat().st_mtime
-        return str(datetime.fromtimestamp(pathobj.lstat().st_mtime))
-
-
-    def upload_thumbnail(self, attachment: Attachment, datasetType="RawDatasets"):
-
-
-        # dataBlock = {
-        #     "caption": filename.stem,
-        #     "thumbnail": encodeImageToThumbnail(filename),
-        #     "datasetId": datasetId,
-        #     "ownerGroup": owner_group,
-        #     "accessGroups": access_groups
-        # }
+    def upload_attachment(self, attachment: Attachment, datasetType="RawDatasets"):
         url = self.baseurl + f"{datasetType}/{urllib.parse.quote_plus(attachment.datasetId)}/attachments"
         logging.debug(url)
         resp = requests.post(
@@ -393,31 +388,8 @@ class NPArrayEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def gen_ev_docs(scm: ScicatIngestor, filename: str, mapping_file: str):
-    with open(mapping_file, 'r') as json_file:
-        data = json.load(json_file)
-    map = Mapping(**data)
-    with h5py.File(filename, 'r') as h5_file:
-        ingestor = MappedH5Generator(
-            [],
-            map,
-            h5_file,
-            'root',
-            thumbs_root='/home/dylan/data/beamlines/als832/thumbs',
-            data_groups=['als832'])
-        descriptor = None
-        start_doc = None
-        for name, doc in ingestor.generate_docstream():
-            if 'start' in name:
-                start_doc = doc
-                continue
-            if 'descriptor' in name:
-                descriptor = doc
-                continue
-            else:
-                continue
-        scm.ingest_run(Path(filename), start_doc, descriptor_doc=descriptor, thumbnail=ingestor.thumbnails[0])
-
+# def get_content_type(response: Response):
+#     response.headers.
 
 def get_file_mod_time(pathobj):
     # may only work on WindowsPath objects...
