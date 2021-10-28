@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import enum
 from typing import Dict, List, Optional, Union
 import h5py
@@ -16,7 +16,7 @@ from typing import List
 
 
 import numpy as np
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import requests  # for HTTP requests
 
 from dotenv import load_dotenv
@@ -101,7 +101,7 @@ class Dataset(Ownable, MongoQueryable):
     classification: Optional[str]
     license: Optional[str]
     version: Optional[str]
-    isPublished: Optional[str]
+    isPublished: Optional[bool] = False
 
 class DataFile(MongoQueryable):
     """
@@ -242,56 +242,6 @@ class ScicatIngestor():
                 verify=self.sslVerify,
             )
         return response
-
-
-
-    # def ingest_scan(self, filepath, run_start,  descriptor_doc, event_sample=None, thumbnails=None):
-    #     logger.info(f"{self.job_id} Scicat ingestion started for {filepath}")
-    #     # get token
-    #     try:
-    #         self.token = self._get_token(username=self.username, password=self.password)
-    #     except Exception as e:
-    #         self.add_error("Could not generate token. Exiting.", e)
-    #         return
-    #     if not self.token:
-    #         self.add_error("could not create token, exiting")
-    #         return
-
-    #     logger.info(f"{self.job_id} Ingesting file {filepath}")
-    #     try:
-    #         projected_start_doc = project_start_doc(run_start, "app")
-    #     except Exception as e:
-    #         self.add_error("error projecting start document. Exiting.", e)
-    #         return
-        
-    #     if can_debug:
-    #         logger.debug(f"{self.job_id} projected start doc: {json.dumps(projected_start_doc)}")
-    #     access_controls = calculate_access_controls(self.username, projected_start_doc)
-    #     logger.info(f"Access controls for  {filepath}  access_groups: {access_controls.get('accessroups')} "\
-    #                 f"owner_group: {access_controls.get('owner_group')}")
-    #     try:
-    #         self._create_sample(
-    #             projected_start_doc,
-    #             access_controls.get("access_groups"), 
-    #             access_controls.get("owner_group"))
-    #     except Exception as e:
-    #         self.add_error(f"Error creating sample for {filepath}. Continuing without sample.", e)
-        
-    #     try:
-    #         scientific_metadata = self._extract_scientific_metadata(descriptor_doc, event_sample, run_start=run_start)
-    #     except Exception as e:
-    #         self.add_error(f"Error getting scientific metadata. Continuing without.", e)
-
-    #     try:
-    #         self._create_raw_dataset(
-    #             projected_start_doc,
-    #             scientific_metadata,
-    #             access_controls.get("access_groups"), 
-    #             access_controls.get("owner_group"),
-    #             filepath,
-    #             thumbnails)
-    #     except Exception as e:
-    #         self.add_error("Error creating raw data set.", e)
 
 
     def upload_sample(self, projected_start_doc, access_groups, owner_group):

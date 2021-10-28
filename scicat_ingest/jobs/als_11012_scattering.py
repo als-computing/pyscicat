@@ -84,6 +84,7 @@ class Scattering11012Reader(DatasetReader):
             sampleId=sample_name,
             isPublished=False,
             description="",
+            keywords=["scattering", "rsoxs", "11.0.1.2", "ccd"],
             creationTime=get_file_mod_time(self._folder),
             **self._ownable.dict())
         return dataset
@@ -139,9 +140,9 @@ def ingest(folder: Path) -> Tuple[str, List[Issue]]:
     dataset = reader.create_dataset()
     dataset_id = ingestor.upload_raw_dataset(dataset)
     reader.dataset_id = dataset_id
-    png_files = folder.glob("*.png")
-    for png_file in png_files:
-        thumbnail = reader.create_attachment(png_file)
+    png_files = list(folder.glob("*.png"))
+    if len(list(png_files)) > 0:
+        thumbnail = reader.create_attachment(png_files[0])
         ingestor.upload_attachment(thumbnail)
 
     data_block = reader.create_data_block()   
