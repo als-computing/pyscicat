@@ -1,5 +1,5 @@
 # Scicat Ingesting Guide
-Here we provide some tips for getting started in ingesting data into SciCat.
+Here we provide some tips for getting started in ingesting data into SciCat. It is assumed that the reader has a working knowledge of [JSON](https://restfulapi.net/introduction-to-json/) and [REST](https://restfulapi.net/).
 
 <i>What is ingestion?</i> 
 
@@ -48,6 +48,7 @@ First, send a POST request to the [Sample endpoint](https://scicatproject.github
 
 Similar to [Scientific Metadata](scientific_metadata), the `Sample` object contains a free-form object called `sampleCharacteristics` in which one can add properties of the sample.
 
+### Ingest Sample
 `Sample` sample object
 ``` json
 
@@ -75,7 +76,7 @@ A successful response to this message will contain a `sampleId` field that will 
 
 Next, send a POST request to the [Dataset endpoint](https://scicatproject.github.io/api/#operation/Dataset.create)
 
-
+### Ingest Dataset
 `Dataset` sample object
 ``` json
 
@@ -85,6 +86,15 @@ Next, send a POST request to the [Dataset endpoint](https://scicatproject.github
     "owner": "Beamline User",
     "description": "A data set taken by beamline user",
     "createdAt": "2019-08-24T14:15:22Z",
+    "contactEmail": "person@example.com",
+    "creationLocation": "beamline1",
+    "creationTime": "2019-08-24T14:15:22Z",
+    "instrumentId": "beamline1",
+    "proposalId": "proposal1",
+    "dataFormat": "nexus",
+    "principalInvestigator": "A. Scientist",
+    "sourceFolder": "/a/b/c/d",
+    "isPublished": false,
     "ownerGroup": "ProposalGroup-1",
     "accessGroups": 
 
@@ -92,12 +102,6 @@ Next, send a POST request to the [Dataset endpoint](https://scicatproject.github
         "ProposalGroup-1",
         "BeamlineGroups-1"
     ],
-    "createdBy": "string",
-    "updatedBy": "string",
-    "datasetsId": "string",
-    "datasetId": "string",
-    "rawDatasetId": "string",
-    "derivedDatasetId": "string",
     "updatedAt": "2019-08-24T14:15:22Z"
 
 }
@@ -105,6 +109,46 @@ Next, send a POST request to the [Dataset endpoint](https://scicatproject.github
 ```
 
 One other very interesting field that can be added to `Datasets` is `keywords`. This is a list of strings that can be used to provide very useful search filters in the SciCat search tool. 
+
+Another thing to note about datasets is the `sourceFolder` field. This is set to the base directory where all files for the `Dataset` are located. Individual file names within that folder are set in `Datafile` objects, described next.
+
+### Ingest Datablocks and Datafiles
+In Scicat, the ability to view and download the files for a `Dataset` depends on ingesting a `Datablock`, which contains one zero or more 'Datafile' instances. 
+
+```json
+
+{
+
+    "archiveId": "uniqueId",
+    "size": 100000,
+
+    "version": null,
+    "dataFileList": 
+
+[
+
+    {"path": "file1.txt", "size": "1000"},
+    {"path": "file2.nxs", "size": "10000000"}
+
+],
+"ownerGroup": "string",
+    "accessGroups": 
+
+    [
+        "ProposalGroup-1",
+        "BeamlineGroups-1"
+    ],
+"createdBy": "string",
+"updatedBy": "string",
+"datasetId": "string",
+"rawDatasetId": "string",
+"derivedDatasetId": "string",
+"createdAt": "2019-08-24T14:15:22Z",
+"updatedAt": "2019-08-24T14:15:22Z"
+
+}
+
+```
 
 
 ## Additional Tasks
