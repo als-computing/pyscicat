@@ -53,6 +53,8 @@ class Issue():
 
 class DatasetType(str, enum.Enum):
     raw = "raw"
+    derived = "derived"
+    base = "base"
 
 class Ownable(BaseModel):
     """ Many objects in SciCat are ownable
@@ -77,14 +79,11 @@ class Dataset(Ownable, MongoQueryable):
     ownerEmail: Optional[str]   
     orcidOfOwner: Optional[str]
     contactEmail: str
-    creationLocation: str
-    creationTime: str
+    creationTime: str = Field(description="Time when dataset became fully available on disk, i.e. ll containing files have been written. Format according to chapter 5.6 internet date/time format in RFC 3339. Local times without timezone/offset info are automatically transformed to UTC using the timezone of the API server.")
     datasetName: Optional[str]
     type: DatasetType
     instrumentId: str
-    proposalId: str
-    dataFormat: str
-    principalInvestigator: str
+    orcidOfOwner: Optional[str]
     sourceFolder: str
     sourceFolderHost: Optional[str]
     size: Optional[int]
@@ -92,7 +91,6 @@ class Dataset(Ownable, MongoQueryable):
     numberOfFiles: Optional[int]
     numberOfFilesArchived: Optional[int]
     scientificMetadata: Dict
-    sampleId: str
     isPublished: str
     description: Optional[str]
     validationStatus: Optional[str]
@@ -103,6 +101,25 @@ class Dataset(Ownable, MongoQueryable):
     version: Optional[str]
     isPublished: Optional[bool] = False
 
+class RawDataset(Dataset):
+    type = DatasetType.raw
+    principalInvestigator: str
+    sampleId: str
+    proposalId: str
+    creationLocation: str
+    dataFormat: str
+
+class DerivedDataset(Dataset):
+    """ Model for a derived dataset """
+    investigator: str
+    inputDatasets: List[str]
+    usedSoftware: List[str]
+    jobParameters: Optional[Dict]
+    jobLogData: Optional[str]
+    ownerEmail: Optional[str]
+    type: str = DatasetType.derived
+    
+    
 class DataFile(MongoQueryable):
     """
     A reference to a file in SciCat. Path is relative
@@ -161,7 +178,7 @@ class ScicatIngestor():
     job_id = "0"
     test = False
 
-    def __init__(self, issues: List[Issue], **kwargs):
+    def __init__(self, issues: List[Issue] = [], **kwargs):
         self.stage = "scicat"
         self._issues = issues
         # nothing to do
@@ -172,7 +189,9 @@ class ScicatIngestor():
         if self.baseurl[-1] != "/":
             self.baseurl = self.baseurl + "/"
             logger.info(f"Baseurl corrected to: {self.baseurl}")
-        self._get_token()
+        print(self.token)
+        if not self.token:
+            self._get_token()
 
     def _get_token(self, username=None, password=None):
         if username is None:
@@ -221,7 +240,7 @@ class ScicatIngestor():
                 url, params={"access_token": self.token}, 
                 timeout=self.timeouts, 
                 stream=False,
-                verify=self.sslVerify,
+                verify=True,
             )
         elif cmd == "get":
             response = requests.get(
@@ -230,7 +249,7 @@ class ScicatIngestor():
                 json=dataDict,
                 timeout=self.timeouts,
                 stream=False,
-                verify=self.sslVerify,
+                verify=True,
             )
         elif cmd == "patch":
             response = requests.patch(
@@ -239,11 +258,36 @@ class ScicatIngestor():
                 json=dataDict,
                 timeout=self.timeouts,
                 stream=False,
-                verify=self.sslVerify,
+                verify=True,
             )
         return response
 
-
+    def get_my_raw_datasets(self):
+        fields = 'fields={"mode"%3A{}}&limits={"skip"%3A0%2C"limit"%3A25%2C"order"%3A"creationTime%3Adesc"}'
+        url = f"{self.baseurl}/RawDatasets/fullquery?{fields}"
+        response = self._send_to_scicat(url, cmd="get")
+        if not response.ok:
+            logger.error(f'{self.job_id} ** Error received: {response}')
+            err = response.json()["error"]
+            logger.error(f'{self.job_id} {err["name"]}, {err["statusCode"]}: {err["message"]}')
+            # self.add_error(f'error getting token {err["name"]}, {err["statusCode"]}: {err["message"]}')
+            return None
+        return response.json()
+    
+    
+    def get_dataset_files(self, pid):
+        pid = urllib.parse.quote_plus(pid)
+        url = f"{self.baseurl}OrigDatablocks/findOne?filter=%7B%22where%22%3A%20%7B%22rawDatasetId%22%3A%20%22{pid}%22%7D%7D"
+        print(url)
+        response = self._send_to_scicat(url, cmd="get")
+        if not response.ok:
+            logger.error(f'{self.job_id} ** Error received: {response}')
+            err = response.json()["error"]
+            logger.error(f'{self.job_id} {err["name"]}, {err["statusCode"]}: {err["message"]}')
+            # self.add_error(f'error getting token {err["name"]}, {err["statusCode"]}: {err["message"]}')
+            return None
+        return response.json()
+    
     def upload_sample(self, projected_start_doc, access_groups, owner_group):
         sample = {
             "sampleId": projected_start_doc.get('sample_id'),
@@ -273,9 +317,20 @@ class ScicatIngestor():
             self.add_warning(f"missing field {field_name} defaulting to {str(default_val)}")
             return default_val
 
-    def upload_raw_dataset(self, dataset: Dataset):
+    def upload_raw_dataset(self, dataset: RawDataset):
         # create dataset 
         raw_dataset_url = self.baseurl + "RawDataSets/replaceOrCreate"
+        resp = self._send_to_scicat(raw_dataset_url, dataset.dict(exclude_none=True))
+        if not resp.ok:
+            err = resp.json()["error"]
+            raise ScicatCommError(f"Error creating raw dataset {err}")
+        new_pid = resp.json().get('pid')
+        logger.info(f"{self.job_id} new dataset created {new_pid}")
+        return new_pid
+        
+    def upload_derived_dataset(self, dataset: DerivedDataset):
+        # create dataset 
+        raw_dataset_url = self.baseurl + "DerivedDataSets/replaceOrCreate"
         resp = self._send_to_scicat(raw_dataset_url, dataset.dict(exclude_none=True))
         if not resp.ok:
             err = resp.json()["error"]
