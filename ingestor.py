@@ -450,18 +450,4 @@ def build_search_terms(projected_start):
     description = [term.lower() for term in terms if len(term) > 0]
     return ' '.join(description)
 
-    # return "  ".join(re.sub(r'[^A-Za-z0-9 ]+', ' ', projected_start.get('sample_name')).split());
 
-if __name__ == "__main__":
-    ch = logging.StreamHandler()
-    # ch.setLevel(logging.INFO)
-    # root_logger.addHandler(ch)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-    logger.setLevel(logging.DEBUG)
-    can_debug = logger.isEnabledFor(logging.DEBUG)
-    can_info = logger.isEnabledFor(logging.INFO)
-    issues = []
-    scm = ScicatIngestor(password="23ljlkw", issues=issues)
-    gen_ev_docs(scm, '/home/dylan/data/beamlines/als832/20210421_091523_test3.h5', './mappings/832Mapping.json')
