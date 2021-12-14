@@ -88,6 +88,7 @@ Next, send a POST request to the [Dataset endpoint](https://scicatproject.github
     "createdAt": "2019-08-24T14:15:22Z",
     "contactEmail": "person@example.com",
     "creationLocation": "beamline1",
+    
     "creationTime": "2019-08-24T14:15:22Z",
     "instrumentId": "beamline1",
     "proposalId": "proposal1",
