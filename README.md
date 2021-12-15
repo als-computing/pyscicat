@@ -1,4 +1,2 @@
-# scicat_ingest
-This repository contains library files and scripts that can be used to ingest experimental data into scicat. 
-
-Information about how to ingest (and further build out this library) can be found in the [Ingesting Guide](./ingesting.md)
+# Pyscicat
+Pyscicat is a python client library for interacting with the [SciCat backend](https://scicatproject.github.io/). It sends messages to the SciCat backend over HTTP. It currently does not contain any command line interface.
