@@ -1,21 +1,27 @@
-from dataclasses import dataclass
-import enum
-from typing import Dict, List, Optional, Union
-
 from datetime import datetime
+import enum
+
 import hashlib
 import urllib
 import base64
 import logging
 
-from pydantic import BaseModel
 import requests  # for HTTP requests
+
+
+from .model import (
+    Attachment,
+    Datablock,
+    Dataset
+)
 
 logger = logging.getLogger("splash_ingest")
 can_debug = logger.isEnabledFor(logging.DEBUG)
 
 
 class ScicatCommError(Exception):
+    """Represents an error encountered during communication with SciCat.
+    """
     def __init__(self, message):
         self.message = message
 
@@ -25,123 +31,30 @@ class Severity(str, enum.Enum):
     fatal = "fatal"
 
 
-@dataclass
-class Issue():
-    severity: Severity
-    stage: str
-    msg: str
-    exception: Union[str, None]
-
-    class Config:
-        arbitrary_types_allowed = True
-
-
-class DatasetType(str, enum.Enum):
-    raw = "raw"
-
-
-class Ownable(BaseModel):
-    """ Many objects in SciCat are ownable
-    """
-    ownerGroup: str
-    accessGroups: List[str]
-
-
-class MongoQueryable(BaseModel):
-    """ Many objects in SciCat are mongo queryable
-    """
-    createdBy: Optional[str]
-    updatedBy: Optional[str]
-    updatedAt: Optional[str]
-    createdAt: Optional[str]
-
-
-class Dataset(Ownable, MongoQueryable):
-    """
-        A dataset in SciCat
-    """
-    pid: Optional[str]
-    owner: str
-    ownerEmail: Optional[str]
-    orcidOfOwner: Optional[str]
-    contactEmail: str
-    creationLocation: str
-    creationTime: str
-    datasetName: Optional[str]
-    type: DatasetType
-    instrumentId: str
-    proposalId: str
-    dataFormat: str
-    principalInvestigator: str
-    sourceFolder: str
-    sourceFolderHost: Optional[str]
-    size: Optional[int]
-    packedSize: Optional[int]
-    numberOfFiles: Optional[int]
-    numberOfFilesArchived: Optional[int]
-    scientificMetadata: Dict
-    sampleId: str
-    isPublished: str
-    description: Optional[str]
-    validationStatus: Optional[str]
-    keywords: Optional[List[str]]
-    datasetName: Optional[str]
-    classification: Optional[str]
-    license: Optional[str]
-    version: Optional[str]
-    isPublished: Optional[bool] = False
-
-
-class DataFile(MongoQueryable):
-    """
-    A reference to a file in SciCat. Path is relative
-    to the Dataset's sourceFolder parameter
-
-    """
-    path: str
-    size: int
-    time: Optional[str]
-    uid: Optional[str] = None
-    gid: Optional[str] = None
-    perm: Optional[str] = None
-
-
-class Datablock(Ownable):
-    """
-    A Datablock maps between a Dataset and contains DataFiles
-    """
-    id: Optional[str]
-    # archiveId: str = None  listed in catamel model, but comes back invalid?
-    size: int
-    packedSize: Optional[int]
-    chkAlg: Optional[int]
-    version: str = None
-    dataFileList: List[DataFile]
-    datasetId: str
-
-
-class Attachment(Ownable):
-    """
-        Attachments can be any base64 encoded string...thumbnails are attachments
-    """
-    id: Optional[str]
-    thumbnail: str
-    caption: Optional[str]
-    datasetId: str
-
-
 class ScicatClient():
     """Responsible for communicating with the Scicat Catamel server via http
-
     """
 
-    def __init__(self, issues: List[Issue], base_url, username, password, timeout_seconds=None):
+    def __init__(self, base_url: str, username: str, password: str, timeout_seconds: int = None):
+        """Initialize a new instance. This method attempts to create a tokenad_a
+        from the provided username and password
+
+        Parameters
+        ----------
+        base_url : str
+            Base url. e.g. `http://localhost:3000/api/v3`
+        username : str
+            username to login with
+        password : str
+            password to login with
+        timeout_seconds : [int], optional
+            timeout in seconds to wait for http connections to return, by default None
+        """
         self._base_url = base_url
         self._timeout_seconds = timeout_seconds  # we are hitting a transmission timeout...
         self._username = username  # default username
         self._password = password     # default password
         self._token = None  # store token here
-        self._issues = issues
 
         logger.info(f"Starting ingestor talking to scicat at: {self._base_url}")
         if self._base_url[-1] != "/":
@@ -218,29 +131,46 @@ class ScicatClient():
             )
         return response
 
-    def upload_sample(self, projected_start_doc, access_groups, owner_group):
-        sample = {
-            "sampleId": projected_start_doc.get('sample_id'),
-            "owner": projected_start_doc.get('pi_name'),
-            "description": projected_start_doc.get('sample_name'),
-            "createdAt": datetime.isoformat(datetime.utcnow()) + "Z",
-            "sampleCharacteristics": {},
-            "isPublished": False,
-            "ownerGroup": owner_group,
-            "accessGroups": access_groups,
-            "createdBy": self._username,
-            "updatedBy": self._username,
-            "updatedAt": datetime.isoformat(datetime.utcnow()) + "Z"
-        }
-        sample_url = f'{self._base_url}Samples'
+    #  Future support for samples
+    # def upload_sample(self, sample):
+    #     sample = {
+    #         "sampleId": projected_start_doc.get('sample_id'),
+    #         "owner": projected_start_doc.get('pi_name'),
+    #         "description": projected_start_doc.get('sample_name'),
+    #         "createdAt": datetime.isoformat(datetime.utcnow()) + "Z",
+    #         "sampleCharacteristics": {},
+    #         "isPublished": False,
+    #         "ownerGroup": owner_group,
+    #         "accessGroups": access_groups,
+    #         "createdBy": self._username,
+    #         "updatedBy": self._username,
+    #         "updatedAt": datetime.isoformat(datetime.utcnow()) + "Z"
+    #     }
+    #     sample_url = f'{self._base_url}Samples'
 
-        resp = self._send_to_scicat(sample_url, sample)
-        if not resp.ok:  # can happen if sample id is a duplicate, but we can't tell that from the response
-            err = resp.json()["error"]
-            raise ScicatCommError(f"Error creating Sample {err}")
+    #     resp = self._send_to_scicat(sample_url, sample)
+    #     if not resp.ok:  # can happen if sample id is a duplicate, but we can't tell that from the response
+    #         err = resp.json()["error"]
+    #         raise ScicatCommError(f"Error creating Sample {err}")
 
-    def upload_raw_dataset(self, dataset: Dataset):
-        # create dataset
+    def upload_raw_dataset(self, dataset: Dataset) -> str:
+        """Upload a raw dataset
+
+        Parameters
+        ----------
+        dataset : Dataset
+            Dataset to load
+
+        Returns
+        -------
+        str
+            pid (or unique identifier) of the newly created dataset
+
+        Raises
+        ------
+        ScicatCommError
+            Raises if a non-20x message is returned
+        """
         raw_dataset_url = self._base_url + "RawDataSets/replaceOrCreate"
         resp = self._send_to_scicat(raw_dataset_url, dataset.dict(exclude_none=True))
         if not resp.ok:
@@ -251,6 +181,18 @@ class ScicatClient():
         return new_pid
 
     def upload_datablock(self, datablock: Datablock):
+        """Upload a Datablock
+
+        Parameters
+        ----------
+        datablock : Datablock
+            Datablock to upload
+
+        Raises
+        ------
+        ScicatCommError
+            Raises if a non-20x message is returned
+        """
         datasetType = "RawDatasets"
 
         url = self._base_url + f"{datasetType}/{urllib.parse.quote_plus(datablock.datasetId)}/origdatablocks"
@@ -259,7 +201,22 @@ class ScicatClient():
             err = resp.json()["error"]
             raise ScicatCommError(f"Error creating datablock. {err}")
 
-    def upload_attachment(self, attachment: Attachment, datasetType="RawDatasets"):
+    def upload_attachment(self, attachment: Attachment, datasetType: str = "RawDatasets"):
+        """Upload an Attachment.  Note that datasetType can be provided to determine the type of dataset
+        that this attachment is attached to. This is required for creating the url that SciCat uses.
+
+        Parameters
+        ----------
+        attachment : Attachment
+            Attachment to upload
+
+        datasetType : str
+            Type of dataset to upload to, default is `RawDatasets`
+        Raises
+        ------
+        ScicatCommError
+            Raises if a non-20x message is returned
+        """
         url = self._base_url + f"{datasetType}/{urllib.parse.quote_plus(attachment.datasetId)}/attachments"
         logging.debug(url)
         resp = requests.post(

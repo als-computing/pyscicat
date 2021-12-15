@@ -1,19 +1,21 @@
 from datetime import datetime
-from typing import List
 from pathlib import Path
 
 import requests_mock
 from ..client import (
     ScicatClient,
+    encode_thumbnail,
+    get_file_mod_time,
+    get_file_size
+
+)
+from ..model import (
     Attachment,
     Datablock,
     DataFile,
     Dataset,
-    Issue,
     Ownable,
-    encode_thumbnail,
-    get_file_mod_time,
-    get_file_size
+
 )
 
 
@@ -28,9 +30,7 @@ def add_mock_requests(mock_request):
 def test_scicate_ingest():
     with requests_mock.Mocker() as mock_request:
         add_mock_requests(mock_request)
-        issues: List[Issue] = []
-        scicat = ScicatClient(issues,
-                              base_url="http://localhost:3000/api/v3",
+        scicat = ScicatClient(base_url="http://localhost:3000/api/v3",
                               username="Zaphod",
                               password="heartofgold")
         assert scicat._token == "a_token", "scicat client set the token given by the server"
@@ -53,6 +53,7 @@ def test_scicate_ingest():
             creationTime=str(datetime.now()),
             type="raw",
             instrumentId="earth",
+
             proposalId="deepthought",
             dataFormat="planet",
             principalInvestigator="A. Mouse",
@@ -61,7 +62,6 @@ def test_scicate_ingest():
             sampleId="gargleblaster",
             **ownable.dict())
         dataset_id = scicat.upload_raw_dataset(dataset)
-        assert len(issues) == 0
 
         # Datablock with DataFiles
         data_file = DataFile(path="/foo/bar", size=42)
@@ -71,7 +71,6 @@ def test_scicate_ingest():
                                dataFileList=[data_file],
                                **ownable.dict())
         scicat.upload_datablock(data_block)
-        assert len(issues) == 0
 
         # Attachment
         attachment = Attachment(

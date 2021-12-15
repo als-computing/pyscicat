@@ -12,8 +12,8 @@ from pyscicat.model import (
 
 # Create a client object. The account used should have the ingestor role in SciCat
 scicat = ScicatClient(base_url="http://localhost:3000/api/v3",
-                        username="Zaphod",
-                        password="heartofgold")
+                      username="Zaphod",
+                      password="heartofgold")
 
 # Create an Ownable that will get reused for several other Model objects
 ownable = Ownable(ownerGroup="magrathea", accessGroups=["deep_though"])
@@ -49,7 +49,7 @@ data_block = Datablock(size=42,
                        **ownable.dict())
 scicat.upload_datablock(data_block)
 
-#Create Attachment
+# Create Attachment
 attachment = Attachment(
     datasetId=dataset_id,
     thumbnail=encode_thumbnail(thumb_path),
