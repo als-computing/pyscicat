@@ -32,17 +32,20 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
-    'IPython.sphinxext.ipython_directive',
-    'IPython.sphinxext.ipython_console_highlighting',
-    'matplotlib.sphinxext.plot_directive',
-    'numpydoc',
-    'sphinx_copybutton',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
+    "sphinxcontrib.openapi",
+    "IPython.sphinxext.ipython_directive",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "matplotlib.sphinxext.plot_directive",
+    "numpydoc",
+    "sphinx_click",
+    "sphinx_copybutton",
+    "myst_parser",
 ]
 
 # Configuration options for plot_directive. See:
@@ -68,7 +71,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pyscicat'
-copyright = '2021, Dylan McReynolds'
+copyright = '2021, SciCat Project'
 author = 'Dylan McReynolds'
 
 # The version info for the project you're documenting, acts as replacement for
