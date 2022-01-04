@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingest Dataset &mdash; pyscicat 0.post44+g6938eb3 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Design" href="../reference/design.html" />
+    <link rel="prev" title="Installation" href="../installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> pyscicat
+          </a>
+              <div class="version">
+                0.post44+g6938eb3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/release-history.html">Release History</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Configuration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How To Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ingest Dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-scicatclient">Create a ScicatClient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-an-ownable">Setup an Ownable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upload-a-dataset">Upload a Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upload-a-datablock">Upload a Datablock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upload-attachment">Upload Attachment</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyscicat</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Ingest Dataset</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/howto/ingest.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="ingest-dataset">
+<h1>Ingest Dataset<a class="headerlink" href="#ingest-dataset" title="Permalink to this headline">¶</a></h1>
+<p>Ingesting Datasets is one of the primary user cases for PySciCat. Here we’re describing, step by step, what’s going on in the provided file in <code class="docutils literal notranslate"><span class="pre">examples/ingest_dataset.py</span></code></p>
+<section id="create-a-scicatclient">
+<h2>Create a ScicatClient<a class="headerlink" href="#create-a-scicatclient" title="Permalink to this headline">¶</a></h2>
+<p>To begin with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">pyscicat.client</span> <span class="kn">import</span> <span class="n">encode_thumbnail</span><span class="p">,</span> <span class="n">ScicatClient</span>
+<span class="kn">from</span> <span class="nn">pyscicat.model</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Attachment</span><span class="p">,</span>
+    <span class="n">Datablock</span><span class="p">,</span>
+    <span class="n">DataFile</span><span class="p">,</span>
+    <span class="n">Dataset</span><span class="p">,</span>
+    <span class="n">Ownable</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a client object. The account used should have the ingestor role in SciCat</span>
+<span class="n">scicat</span> <span class="o">=</span> <span class="n">ScicatClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:3000/api/v3&quot;</span><span class="p">,</span>
+                        <span class="n">username</span><span class="o">=</span><span class="s2">&quot;Zaphod&quot;</span><span class="p">,</span>
+                        <span class="n">password</span><span class="o">=</span><span class="s2">&quot;heartofgold&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here we simply import the python code. Then, we setup a <code class="docutils literal notranslate"><span class="pre">ScicatClient</span></code> instance with the username/password that you were given by your SciCat administrator.</p>
+</section>
+<section id="setup-an-ownable">
+<h2>Setup an Ownable<a class="headerlink" href="#setup-an-ownable" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create an Ownable that will get reused for several other Model objects</span>
+<span class="n">ownable</span> <span class="o">=</span> <span class="n">Ownable</span><span class="p">(</span><span class="n">ownerGroup</span><span class="o">=</span><span class="s2">&quot;magrathea&quot;</span><span class="p">,</span> <span class="n">accessGroups</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;deep_though&quot;</span><span class="p">])</span>
+<span class="n">thumb_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;test/data/SciCatLogo.png&quot;</span>
+</pre></div>
+</div>
+<p>Now we setup an <code class="docutils literal notranslate"><span class="pre">Ownable</span></code> instance. This is a model class that several other model classes inherit from. We do not have to create it explicitly (we could have simply added <code class="docutils literal notranslate"><span class="pre">ownerGroup</span></code> and <code class="docutils literal notranslate"><span class="pre">accessGroups</span></code> each object that takes it, but here we can be DRY (Don’t Repeat Yourself).</p>
+</section>
+<section id="upload-a-dataset">
+<h2>Upload a Dataset<a class="headerlink" href="#upload-a-dataset" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a RawDataset object with settings for your choosing. Notice how</span>
+<span class="c1"># we pass the `ownable` instance.</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/foo/bar&quot;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">owner</span><span class="o">=</span><span class="s2">&quot;slartibartfast&quot;</span><span class="p">,</span>
+    <span class="n">contactEmail</span><span class="o">=</span><span class="s2">&quot;slartibartfast@magrathea.org&quot;</span><span class="p">,</span>
+    <span class="n">creationLocation</span><span class="o">=</span><span class="s2">&quot;magrathea&quot;</span><span class="p">,</span>
+    <span class="n">creationTime</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="n">instrumentId</span><span class="o">=</span><span class="s2">&quot;earth&quot;</span><span class="p">,</span>
+    <span class="n">proposalId</span><span class="o">=</span><span class="s2">&quot;deepthought&quot;</span><span class="p">,</span>
+    <span class="n">dataFormat</span><span class="o">=</span><span class="s2">&quot;planet&quot;</span><span class="p">,</span>
+    <span class="n">principalInvestigator</span><span class="o">=</span><span class="s2">&quot;A. Mouse&quot;</span><span class="p">,</span>
+    <span class="n">sourceFolder</span><span class="o">=</span><span class="s2">&quot;/foo/bar&quot;</span><span class="p">,</span>
+    <span class="n">scientificMetadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;field&quot;</span><span class="p">},</span>
+    <span class="n">sampleId</span><span class="o">=</span><span class="s2">&quot;gargleblaster&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">ownable</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+<span class="n">dataset_id</span> <span class="o">=</span> <span class="n">scicat</span><span class="o">.</span><span class="n">upload_raw_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can create a Dataset instance and upload it! Notice how we passed the fields of the <code class="docutils literal notranslate"><span class="pre">ownable</span></code> instance there at the end.</p>
+<p>Note that we store the provided dataset_id in a variable for later use.</p>
+<p>Also note the <code class="docutils literal notranslate"><span class="pre">sourceFolder</span></code>. This is a folder on the file system that SciCat has access to, and will contain the files for this <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>.</p>
+</section>
+<section id="upload-a-datablock">
+<h2>Upload a Datablock<a class="headerlink" href="#upload-a-datablock" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Datablock with DataFiles</span>
+<span class="n">data_file</span> <span class="o">=</span> <span class="n">DataFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;file.h5&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">data_block</span> <span class="o">=</span> <span class="n">Datablock</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+                       <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                       <span class="n">datasetId</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span>
+                       <span class="n">dataFileList</span><span class="o">=</span><span class="p">[</span><span class="n">data_file</span><span class="p">],</span>
+                       <span class="o">**</span><span class="n">ownable</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+<span class="n">scicat</span><span class="o">.</span><span class="n">upload_datablock</span><span class="p">(</span><span class="n">data_block</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Datablock</span></code> is a container for <code class="docutils literal notranslate"><span class="pre">DataFile</span></code> instances. We are not loading the files, rather we are creating references that are used (and displayed) in SciCat.</p>
+<p>In this example, there is only one <code class="docutils literal notranslate"><span class="pre">DataFile</span></code> instance. It has a path (“file.h5”). In the real world this would be a file that is in the folder identified in the <code class="docutils literal notranslate"><span class="pre">sourceFolder</span></code> of the <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>.</p>
+</section>
+<section id="upload-attachment">
+<h2>Upload Attachment<a class="headerlink" href="#upload-attachment" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="c1">#Create Attachment</span>
+<span class="n">attachment</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span>
+    <span class="n">datasetId</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span>
+    <span class="n">thumbnail</span><span class="o">=</span><span class="n">encode_thumbnail</span><span class="p">(</span><span class="n">thumb_path</span><span class="p">),</span>
+    <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;scattering image&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">ownable</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">scicat</span><span class="o">.</span><span class="n">upload_attachment</span><span class="p">(</span><span class="n">attachment</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we upload an <code class="docutils literal notranslate"><span class="pre">Attachment</span></code>. This is often used in SciCat to display thumbnails for a <code class="docutils literal notranslate"><span class="pre">Dataset</span></code>. Here, we are loading the actual content of a file (stored in SciCat’s database).</p>
+<p>So, to put it all together:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">pyscicat.client</span> <span class="kn">import</span> <span class="n">encode_thumbnail</span><span class="p">,</span> <span class="n">ScicatClient</span>
+<span class="kn">from</span> <span class="nn">pyscicat.model</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Attachment</span><span class="p">,</span>
+    <span class="n">Datablock</span><span class="p">,</span>
+    <span class="n">DataFile</span><span class="p">,</span>
+    <span class="n">Dataset</span><span class="p">,</span>
+    <span class="n">Ownable</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a client object. The account used should have the ingestor role in SciCat</span>
+<span class="n">scicat</span> <span class="o">=</span> <span class="n">ScicatClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:3000/api/v3&quot;</span><span class="p">,</span>
+                        <span class="n">username</span><span class="o">=</span><span class="s2">&quot;Zaphod&quot;</span><span class="p">,</span>
+                        <span class="n">password</span><span class="o">=</span><span class="s2">&quot;heartofgold&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create an Ownable that will get reused for several other Model objects</span>
+<span class="n">ownable</span> <span class="o">=</span> <span class="n">Ownable</span><span class="p">(</span><span class="n">ownerGroup</span><span class="o">=</span><span class="s2">&quot;magrathea&quot;</span><span class="p">,</span> <span class="n">accessGroups</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;deep_though&quot;</span><span class="p">])</span>
+<span class="n">thumb_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;test/data/SciCatLogo.png&quot;</span>
+
+
+<span class="c1"># Create a RawDataset object with settings for your choosing. Notice how</span>
+<span class="c1"># we pass the `ownable` instance.</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/foo/bar&quot;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">owner</span><span class="o">=</span><span class="s2">&quot;slartibartfast&quot;</span><span class="p">,</span>
+    <span class="n">contactEmail</span><span class="o">=</span><span class="s2">&quot;slartibartfast@magrathea.org&quot;</span><span class="p">,</span>
+    <span class="n">creationLocation</span><span class="o">=</span><span class="s2">&quot;magrathea&quot;</span><span class="p">,</span>
+    <span class="n">creationTime</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="n">instrumentId</span><span class="o">=</span><span class="s2">&quot;earth&quot;</span><span class="p">,</span>
+    <span class="n">proposalId</span><span class="o">=</span><span class="s2">&quot;deepthought&quot;</span><span class="p">,</span>
+    <span class="n">dataFormat</span><span class="o">=</span><span class="s2">&quot;planet&quot;</span><span class="p">,</span>
+    <span class="n">principalInvestigator</span><span class="o">=</span><span class="s2">&quot;A. Mouse&quot;</span><span class="p">,</span>
+    <span class="n">sourceFolder</span><span class="o">=</span><span class="s2">&quot;/foo/bar&quot;</span><span class="p">,</span>
+    <span class="n">scientificMetadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;field&quot;</span><span class="p">},</span>
+    <span class="n">sampleId</span><span class="o">=</span><span class="s2">&quot;gargleblaster&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">ownable</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+<span class="n">dataset_id</span> <span class="o">=</span> <span class="n">scicat</span><span class="o">.</span><span class="n">upload_raw_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+<span class="c1"># Create Datablock with DataFiles</span>
+<span class="n">data_file</span> <span class="o">=</span> <span class="n">DataFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;file.h5&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">data_block</span> <span class="o">=</span> <span class="n">Datablock</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+                       <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                       <span class="n">datasetId</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span>
+                       <span class="n">dataFileList</span><span class="o">=</span><span class="p">[</span><span class="n">data_file</span><span class="p">],</span>
+                       <span class="o">**</span><span class="n">ownable</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+<span class="n">scicat</span><span class="o">.</span><span class="n">upload_datablock</span><span class="p">(</span><span class="n">data_block</span><span class="p">)</span>
+
+<span class="c1">#Create Attachment</span>
+<span class="n">attachment</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span>
+    <span class="n">datasetId</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span>
+    <span class="n">thumbnail</span><span class="o">=</span><span class="n">encode_thumbnail</span><span class="p">(</span><span class="n">thumb_path</span><span class="p">),</span>
+    <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;scattering image&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">ownable</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">scicat</span><span class="o">.</span><span class="n">upload_attachment</span><span class="p">(</span><span class="n">attachment</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/design.html" class="btn btn-neutral float-right" title="Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SciCat Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
