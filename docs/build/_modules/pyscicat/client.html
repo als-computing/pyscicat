@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyscicat.client &mdash; pyscicat 0.post101+g79809ad documentation</title>
+  <title>pyscicat.client &mdash; pyscicat 0.post111+gdc874e7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../../index.html" class="icon icon-home"> pyscicat
           </a>
               <div class="version">
-                0.post101+g79809ad
+                0.post111+gdc874e7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -145,6 +145,8 @@
 <span class="sd">        timeout_seconds : [int], optional</span>
 <span class="sd">            timeout in seconds to wait for http connections to return, by default None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">base_url</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
+            <span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">=</span> <span class="n">base_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout_seconds</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">timeout_seconds</span>  <span class="c1"># we are hitting a transmission timeout...</span>
@@ -436,6 +438,17 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
 
+    <span class="c1"># this method is future, needs testing.</span>
+    <span class="c1"># def update_dataset(self, pid, fields: Dict):</span>
+    <span class="c1">#     response = self._send_to_scicat(</span>
+    <span class="c1">#         f&quot;{self._base_url}/Datasets&quot;, dataDict=fields, cmd=&quot;patch&quot;</span>
+    <span class="c1">#     )</span>
+    <span class="c1">#     if not response.ok:</span>
+    <span class="c1">#         err = response.json()[&quot;error&quot;]</span>
+    <span class="c1">#         logger.error(f&#39;{err[&quot;name&quot;]}, {err[&quot;statusCode&quot;]}: {err[&quot;message&quot;]}&#39;)</span>
+    <span class="c1">#         return None</span>
+    <span class="c1">#     return response.json()</span>
+
 
 <span class="k">def</span> <span class="nf">get_file_size</span><span class="p">(</span><span class="n">pathobj</span><span class="p">):</span>
     <span class="n">filesize</span> <span class="o">=</span> <span class="n">pathobj</span><span class="o">.</span><span class="n">lstat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
@@ -477,7 +490,8 @@
     <span class="sd">&quot;&quot;&quot;logs in using the provided username / password combination</span>
 <span class="sd">    and receives token for further communication use&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Getting new token for user </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+    <span class="k">if</span> <span class="n">base_url</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
+        <span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;Users/login&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">},</span>
