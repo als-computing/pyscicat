@@ -22,8 +22,15 @@
       Datablock
       Dataset
       DatasetType
+      DerivedDataset
+      Instrument
+      Job
       MongoQueryable
       Ownable
+      Proposal
+      RawDataset
+      Sample
+      User
    
    
 

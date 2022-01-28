@@ -14,8 +14,12 @@
    .. autosummary::
    
       ~ScicatClient.__init__
+      ~ScicatClient.get_datasets
+      ~ScicatClient.get_datasets_full_query
       ~ScicatClient.upload_attachment
       ~ScicatClient.upload_datablock
+      ~ScicatClient.upload_dataset
+      ~ScicatClient.upload_derived_dataset
       ~ScicatClient.upload_raw_dataset
    
    

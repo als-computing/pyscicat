@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyscicat.model &mdash; pyscicat 0.post44+g6938eb3 documentation</title>
+  <title>pyscicat.model &mdash; pyscicat 0.post101+g79809ad documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../index.html" class="icon icon-home"> pyscicat
           </a>
               <div class="version">
-                0.post44+g6938eb3
+                0.post101+g79809ad
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -108,16 +108,37 @@
 <td><p>A Datablock maps between a Dataset and contains DataFiles</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dataset</span></code>(*[, createdBy, updatedBy, ...])</p></td>
-<td><p>A dataset in SciCat</p></td>
+<td><p>A dataset in SciCat, base class for derived and raw datasets</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatasetType</span></code>(value)</p></td>
 <td><p>type of Dataset</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MongoQueryable</span></code>(*[, createdBy, updatedBy, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DerivedDataset</span></code>(*[, createdBy, updatedBy, ...])</p></td>
+<td><p>Derived datasets which have been generated based on one or more raw datasets</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Instrument</span></code>(*[, createdBy, updatedBy, ...])</p></td>
+<td><p>Instrument class, most of this is flexibly definable in customMetadata</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Job</span></code>(*[, createdBy, updatedBy, updatedAt, ...])</p></td>
+<td><p>This collection keeps information about jobs to be excuted in external systems.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MongoQueryable</span></code>(*[, createdBy, updatedBy, ...])</p></td>
 <td><p>Many objects in SciCat are mongo queryable</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ownable</span></code>(*, ownerGroup, accessGroups)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ownable</span></code>(*, ownerGroup, accessGroups)</p></td>
 <td><p>Many objects in SciCat are ownable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Proposal</span></code>(*[, createdBy, updatedBy, ...])</p></td>
+<td><p>Defines the purpose of an experiment and links an experiment to principal investigator and main proposer</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RawDataset</span></code>(*[, createdBy, updatedBy, ...])</p></td>
+<td><p>Raw datasets from which derived datasets are.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sample</span></code>(*[, createdBy, updatedBy, updatedAt, ...])</p></td>
+<td><p>Models describing the characteristics of the samples to be investigated.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">User</span></code>(*, realm, username, email[, emailVerified])</p></td>
+<td><p>Base user.</p></td>
 </tr>
 </tbody>
 </table>
