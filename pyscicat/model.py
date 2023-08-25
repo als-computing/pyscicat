@@ -202,7 +202,7 @@ class OrigDatablock(Ownable):
     """
 
     id: Optional[str] = None
-    # archiveId: str = None  listed in catamel model, but comes back invalid?
+    chkAlg :Optional[str] = None
     size: int
     instrumentGroup: Optional[str] = None
     dataFileList: List[DataFile]

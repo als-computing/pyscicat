@@ -239,7 +239,7 @@ class ScicatClient:
     create_dataset_origdatablock = datasets_origdatablock_create
 
     def datasets_attachment_create(
-        self, attachment: Attachment, datasetType: str = "Datasets"
+        self, attachment: Attachment, datasetType: str = "Datasets" #V4.x of Scicat's backend does not have a route for RawDatasets so if datasetType is not provided it will cause 502
     ) -> dict:
         """
         Create a new Attachment for a dataset.
