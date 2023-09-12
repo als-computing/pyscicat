@@ -255,7 +255,7 @@ class ScicatClient:
             Attachment to upload
 
         datasetType : str
-            Type of dataset to upload to, default is `RawDatasets`
+            Type of dataset to upload to, default is `Datasets`
         Raises
         ------
         ScicatCommError
