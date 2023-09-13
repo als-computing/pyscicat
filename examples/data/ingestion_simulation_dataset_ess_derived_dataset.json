@@ -1,0 +1,256 @@
+{
+    "id": "9be3bd96-e256-11ec-bd08-f32122965a87",
+    "dataset": {
+        "datasetName": "CAMEA CAMEA31 Hsize 4 moderator_size_y 3 PGESKSE derived",
+        "description": "CAMEA CAMEA31 Hsize 4 moderator_size_y 3 PGESKSE",
+        "investigator": "Max Novelli",
+        "inputDatasets" : ["0275d813-be6b-444f-812f-b8311d129361"],
+        "usedSoftware" : ["python","My software"],
+        "jobParameters" : {
+            "parameter-1" : "value-1",
+            "parameter-2" : "value-2"
+        },
+        "jobLogData" : "Some jebrish about the dataset",
+        "owner": "Massimiliano Novelli",
+        "ownerEmail": "max.novelli@ess.eu",
+        "contactEmail": "max.novelli@ess.eu",
+        "sourceFolder": "/mnt/data/simulation/CAMEA/CAMEA31",
+        "creationTime": "2022-03-07T15:44:59.000Z",
+        "type": "derived",
+        "scientificMetadata": {
+            "sample_width": { "value": 0.015, "unit": "m" },
+            "sample_height": { "value": 0.015, "unit": "m" },
+            "divergence_requirement_horizontal": { "value": 0.75, "unit": "deg" },
+            "divergence_requirement_vertical": { "value": 1, "unit": "deg" },
+            "guide_sample_distance": { "value": 0.6, "unit": "m" },
+            "lower_wavelength_limit": { "value": 1, "unit": "\u00c5" },
+            "upper_wavelength_limit": { "value": 3.6, "unit": "\u00c5" },
+            "moderator_width": { "value": 0.12, "unit": "m" },
+            "moderator_height": { "value": 0.03, "unit": "m" },
+            "moderator_sample_distance": { "value": 170, "unit": "m" },
+            "parsing_variables": { "value": "guide_start , startx1 , starty1 , length1", "unit": "" },
+            "parsing_min_guide_start": { "value": 2.000035881054106, "unit": "m" },
+            "parsing_max_guide_start": { "value": 5.407538318585075, "unit": "m" },
+            "parsing_mean_guide_start": { "value": 2.3475508029429557, "unit": "m" },
+            "parsing_std_guide_start": { "value": 0.5522363822422368, "unit": "m" },
+            "parsing_min_startx1": { "value": 0.006706596967962139, "unit": "m" },
+            "parsing_max_startx1": { "value": 0.1460959338571846, "unit": "m" },
+            "parsing_mean_startx1": { "value": 0.08885675463366878, "unit": "m" },
+            "parsing_std_startx1": { "value": 0.017699812942929365, "unit": "m" },
+            "parsing_min_starty1": { "value": 0.011762187831963904, "unit": "m" },
+            "parsing_max_starty1": { "value": 0.14999127413576652, "unit": "m" },
+            "parsing_mean_starty1": { "value": 0.13009670276273638, "unit": "m" },
+            "parsing_std_starty1": { "value": 0.011522927034872269, "unit": "m" },
+            "parsing_min_length1": { "value": 28.915197821153896, "unit": "" },
+            "parsing_max_length1": { "value": 95.07944574028325, "unit": "" },
+            "parsing_mean_length1": { "value": 64.23126877070395, "unit": "" },
+            "parsing_std_length1": { "value": 10.210341803833671, "unit": "" },
+            "optimization_name": { "value": "PGESKSE", "unit": "" },
+            "configuration_summary": { "value": "PGESKSE", "unit": "" },
+            "best_figure_of_merit": { "value": "0.25293", "unit": "" },
+            "brilliance_transfer": { "value": "0.47344", "unit": "" },
+            "event_file_name_suffix": { "value": "4Hsize_3moderator_size_y", "unit": "" },
+            "number_of_parameters": { "value": 2, "unit": "" },
+            "parameters_name": { "value": "Hsize , moderator_size_y", "unit": "" },
+            "event_writen_present": { "value": true, "unit": "" },
+            "event_writen_file": { "value": "master_record-writen_4Hsize_3moderator_size_y.txt", "unit": "" },
+            "event_writen_timestamp": { "value": "2014-01-23T19:52:38", "unit": "" },
+            "event_done_present": { "value": true, "unit": "" },
+            "event_done_file": { "value": "master_record-done_4Hsize_3moderator_size_y.txt", "unit": "" },
+            "event_done_timestamp": { "value": "2014-01-25T00:35:55", "unit": "" },
+            "event_analysis_present": { "value": true, "unit": "" },
+            "event_analysis_file": { "value": "output/analysis/master_record-analyzed_4Hsize_3moderator_size_y.txt", "unit": "" },
+            "event_analysis_timestamp": { "value": "2014-01-28T14:03:02", "unit": "" },
+            "dataset_name": { "value": "CAMEA CAMEA31 Hsize 4 moderator_size_y 3 PGESKSE", "unit": "" },
+            "run_name": { "value": "CAMEA CAMEA31", "unit": "" },
+            "scan_name": { "value": "4Hsize_3moderator_size_y", "unit": "" },
+            "output_file_name_base": { "value": "PGESKSE_4Hsize_3moderator_size_y", "unit": "" },
+            "dataset_access_path": { "value": "/mnt/data/simulation/CAMEA/CAMEA31", "unit": "" },
+            "parameters_structure": { "value": "[{\"name\": \"Hsize\", \"value\": \"1.5\", \"index\": \"4\"}, {\"name\": \"moderator_size_y\", \"value\": \"0.03\", \"index\": \"3\"}]", "unit": "" },
+            "Hsize": { "value": 4, "unit": "cm" },
+            "moderator_size_y": { "value": 3, "unit": "m" }
+        },
+        "techniques": [
+            {
+                "pid": "fe888574-5cc0-11ec-90c3-bf82943dec35",
+                "name": "Simulation"
+            }
+        ],
+        "size": 68386784,
+        "instrumentId": ""
+    },
+    "orig_datablock": {
+        "size": 68386784,
+        "dataFileList": [
+            {
+                "path": "launch_all.sh",
+                "size": 10171,
+                "time": "2014-01-23T19:52:37.000Z"
+            },
+            {
+                "path": "suggested_reruns-fails.sh",
+                "size": 448,
+                "time": "2014-01-23T19:53:04.000Z"
+            },
+            {
+                "path": "compile_all_py.sh",
+                "size": 273,
+                "time": "2014-01-23T19:52:37.000Z"
+            },
+            {
+                "path": "clean3.sh",
+                "size": 354,
+                "time": "2014-01-25T10:44:54.000Z"
+            },
+            {
+                "path": "master_record-done_4Hsize_3moderator_size_y.txt",
+                "size": 579,
+                "time": "2014-01-25T00:35:55.000Z"
+            },
+            {
+                "path": "master_record-writen_4Hsize_3moderator_size_y.txt",
+                "size": 561,
+                "time": "2014-01-23T19:52:38.000Z"
+            },
+            {
+                "path": "compile_all.sh",
+                "size": 259,
+                "time": "2014-01-23T19:52:37.000Z"
+            },
+            {
+                "path": "output/brill_ref/brilliance_ref_4Hsize_3moderator_size_y.mat",
+                "size": 11624010,
+                "time": "2014-01-24T07:56:45.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_acceptance_ess.png",
+                "size": 521132,
+                "time": "2014-01-27T11:38:06.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_acceptance_pure.png",
+                "size": 518423,
+                "time": "2014-01-27T11:37:52.000Z"
+            },
+            {
+                "path": "output/analysis/master_record-analyzed_4Hsize_3moderator_size_y.txt",
+                "size": 587,
+                "time": "2014-01-28T14:03:02.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_overall_pure.png",
+                "size": 144605,
+                "time": "2014-01-27T11:37:49.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_posdiv_ess.png",
+                "size": 336496,
+                "time": "2014-01-27T11:38:04.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y_all.mat",
+                "size": 34321077,
+                "time": "2014-01-25T00:35:55.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_overall_ess.png",
+                "size": 127660,
+                "time": "2014-01-27T11:38:02.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_geometry.dat",
+                "size": 2175,
+                "time": "2014-01-25T00:23:10.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y_ifit_analyse.m",
+                "size": 19482,
+                "time": "2014-01-23T19:52:40.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_geometry.png",
+                "size": 76259,
+                "time": "2014-01-27T11:38:09.000Z"
+            },
+            {
+                "path": "output/analysis/PGESKSE_4Hsize_3moderator_size_y1_posdiv_pure.png",
+                "size": 353828,
+                "time": "2014-01-27T11:37:50.000Z"
+            },
+            {
+                "path": "brilliance_refference/brilliance_ifit_4Hsize_3moderator_size_y.m",
+                "size": 3048,
+                "time": "2014-01-23T19:52:33.000Z"
+            },
+            {
+                "path": "brilliance_refference/brilliance_4Hsize_3moderator_size_y1.mat",
+                "size": 11626979,
+                "time": "2014-01-24T07:56:42.000Z"
+            },
+            {
+                "path": "brilliance_refference/brilliance_4Hsize_3moderator_size_y.batch",
+                "size": 671,
+                "time": "2014-01-23T19:52:32.000Z"
+            },
+            {
+                "path": "brilliance_refference/input_used_4Hsize_3moderator_size_y.txt",
+                "size": 358,
+                "time": "2014-01-23T19:52:35.000Z"
+            },
+            {
+                "path": "brilliance_refference/run_brilliance_ifit_4Hsize_3moderator_size_y.m",
+                "size": 53,
+                "time": "2014-01-23T19:52:36.000Z"
+            },
+            {
+                "path": "PGESKSE/PGESKSE_4Hsize_3moderator_size_y.batch",
+                "size": 734,
+                "time": "2014-01-23T19:52:48.000Z"
+            },
+            {
+                "path": "PGESKSE/PGESKSE_4Hsize_3moderator_size_y_ifit.m",
+                "size": 11101,
+                "time": "2014-01-23T19:52:48.000Z"
+            },
+            {
+                "path": "PGESKSE/err_PGESKSE_4Hsize_3moderator_size_y.txt",
+                "size": 0,
+                "time": "2014-01-24T21:13:29.000Z"
+            },
+            {
+                "path": "PGESKSE/run_PGESKSE_4Hsize_3moderator_size_y_ifit.m",
+                "size": 50,
+                "time": "2014-01-23T19:52:51.000Z"
+            },
+            {
+                "path": "PGESKSE/out_PGESKSE_4Hsize_3moderator_size_y.txt",
+                "size": 8681220,
+                "time": "2014-01-25T00:35:58.000Z"
+            },
+            {
+                "path": "PGESKSE/compile_PGESKSE_py.sh",
+                "size": 558,
+                "time": "2014-01-23T19:52:45.000Z"
+            },
+            {
+                "path": "PGESKSE/compile_PGESKSE.sh",
+                "size": 540,
+                "time": "2014-01-23T19:52:45.000Z"
+            },
+            {
+                "path": "PGESKSE/PGESKSE_4Hsize_3moderator_size_y1.par",
+                "size": 918,
+                "time": "2014-01-25T00:35:55.000Z"
+            },
+            {
+                "path": "PGESKSE/PGESKSE_4Hsize_3moderator_size_y1_geometry.dat",
+                "size": 2175,
+                "time": "2014-01-25T00:23:10.000Z"
+            }
+        ]
+    },
+    "ownable": {
+        "ownerGroup": "ess",
+        "accessGroups": ["dmsc"]
+    }
+}

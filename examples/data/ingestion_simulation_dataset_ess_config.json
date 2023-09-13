@@ -1,0 +1,7 @@
+{
+  "scicat" : {
+    "host": "<your_scicat_url>",
+    "username": "ingestor",
+    "password": "<your_ingestor_password>"
+  }
+}

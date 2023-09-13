@@ -17,6 +17,7 @@ installation
 ```{toctree}
 :caption: How To Guides
 howto/ingest
+howto/ingestion_simulation_dataset_ess
 ```
 
 
