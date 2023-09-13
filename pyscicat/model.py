@@ -25,7 +25,7 @@ class MongoQueryable(BaseModel):
 class Ownable(MongoQueryable):
     """Many objects in SciCat are ownable"""
 
-    ownerGroup: str
+    ownerGroup: Optional[str] = None
     accessGroups: Optional[List[str]] = None
     instrumentGroup: Optional[str] = None
 
